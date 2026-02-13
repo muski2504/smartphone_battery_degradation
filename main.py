@@ -5,13 +5,22 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 
-st.title("🔋 Smartphone Battery Health Dashboard")
+st.title("📱 Smartphone Battery Health Dashboard")
 
 # Load dataset
 df = pd.read_csv("smartphone_battery_degradation_data.csv")
 
+# ---------------- HEATMAP SECTION ----------------
+st.subheader("📊 Correlation Heatmap")
+
+fig_heat, ax_heat = plt.subplots(figsize=(8,6))
+sns.heatmap(df.corr(), annot=True, cmap="coolwarm", ax=ax_heat)
+st.pyplot(fig_heat)
+
+st.markdown("---")
+
 # ---------------- INPUT SECTION ----------------
-st.header("Enter Phone Usage Details")
+st.subheader("Enter Phone Usage Details")
 
 age = st.number_input("Age (months)", min_value=0)
 cycles = st.number_input("Charge Cycles", min_value=0)
@@ -20,7 +29,6 @@ fast = st.number_input("Fast Charge %", min_value=0)
 temp = st.number_input("Average Temperature (°C)", min_value=0)
 discharge = st.number_input("Full Discharge Count", min_value=0)
 
-# Load model
 model = joblib.load("battery_model.pkl")
 
 if st.button("Predict & Show Graphs"):
@@ -38,22 +46,20 @@ if st.button("Predict & Show Graphs"):
 
     st.success(f"Predicted Battery Health: {prediction:.2f}%")
 
-    # ---------------- DYNAMIC GRAPH ----------------
-    st.subheader("📊 Your Prediction vs Dataset")
+    # ---------------- DISTRIBUTION WITH PREDICTION ----------------
+    st.subheader("📈 Prediction vs Dataset Distribution")
 
-    fig, ax = plt.subplots()
+    fig1, ax1 = plt.subplots()
 
-    # Plot dataset distribution
-    sns.histplot(df["battery_health_percent"], kde=True, ax=ax)
+    sns.histplot(df["battery_health_percent"], kde=True, bins=10,ax=ax1)
 
-    # Plot your prediction as vertical line
-    ax.axvline(prediction, color='red', linestyle='--', linewidth=2)
+    # Red vertical line for user prediction
+    ax1.axvline(prediction, color='red', linestyle='--', linewidth=2)
 
-    ax.set_xlabel("Battery Health (%)")
+    ax1.set_xlabel("Battery Health (%)")
+    st.pyplot(fig1)
 
-    st.pyplot(fig)
-
-    # ---------------- BAR COMPARISON ----------------
+    # ---------------- BAR VISUALIZATION ----------------
     st.subheader("📉 Predicted Health Visualization")
 
     fig2, ax2 = plt.subplots()
