@@ -52,12 +52,23 @@ if st.button("Predict & Show Graphs"):
     st.pyplot(fig1)
 
     # ---------------- BAR VISUALIZATION ----------------
-    st.subheader(" Predicted Health Visualization")
+    # st.subheader(" Predicted Health Visualization")
 
-    fig2, ax2 = plt.subplots()
-    ax2.bar(["Predicted Health"], [prediction])
-    ax2.set_ylim(0, 100)
-    st.pyplot(fig2)
+    # fig2, ax2 = plt.subplots()
+    # ax2.bar(["Predicted Health"], [prediction])
+    # ax2.set_ylim(0, 100)
+    # st.pyplot(fig2)
+
+color = "green" if prediction >= 80 else "orange" if prediction >= 60 else "red"
+
+fig2, ax2 = plt.subplots(figsize=(6,4))
+ax2.bar(["Predicted Health"], [prediction], color=color)
+ax2.set_ylim(0, 100)
+ax2.text(0, prediction + 2, f"{prediction:.2f}%", 
+         ha='center', fontsize=12, fontweight='bold')
+
+st.pyplot(fig2)
+
 
 # ---------------- HEATMAP SECTION ----------------
 st.subheader(" Correlation Heatmap")
